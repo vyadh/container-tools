@@ -2,16 +2,15 @@
 
 FROM ubuntu:noble
 
+ARG NIX_VERSION
+
 # Enable HTTPS support in wget and set nsswitch.conf to make resolution work within containers
-RUN apt update && apt install -y --no-install-recommends openssl ca-certificates git wget xz-utils \
+RUN apt update && apt install -y --no-install-recommends openssl ca-certificates git curl jq xz-utils \
     && echo hosts: files dns > /etc/nsswitch.conf \
     && rm -rf /var/lib/apt/lists/*
 
 # Download Nix and install it into the system.
-# todo query
-ARG NIX_VERSION=2.24.4
-
-RUN wget https://nixos.org/releases/nix/nix-${NIX_VERSION}/nix-${NIX_VERSION}-$(uname -m)-linux.tar.xz \
+RUN curl -OL https://nixos.org/releases/nix/nix-${NIX_VERSION}/nix-${NIX_VERSION}-$(uname -m)-linux.tar.xz \
   && tar xf nix-${NIX_VERSION}-$(uname -m)-linux.tar.xz \
   && groupadd --system -g 30000 nixbld \
   && for i in $(seq 1 30); do useradd -d /var/empty -c "Nix build user $i" -u $((30000 + i)) -G nixbld nixbld$i ; done \

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-docker build -t nix:ubuntu -f nix-ubuntu.Dockerfile .
+# Query latest version of Nix (or more specifically and not ideally, the latest tag)
+NIX_VERSION=$(curl -s https://api.github.com/repos/NixOS/nix/tags | jq -r '.[0].name')
+echo "Nix version: $NIX_VERSION"
+
+docker build -t nix:ubuntu -f nix-ubuntu.Dockerfile --build-arg NIX_VERSION="$NIX_VERSION" .
 
 types=(alpine ubuntu scratch)
 

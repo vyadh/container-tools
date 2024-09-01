@@ -3,7 +3,8 @@
   "packages": [
     "git@latest",
     "docker@latest",
-    "jq@latest"
+    "jq@latest",
+    "curl@latest"
   ],
   "shell": {
     "init_hook": [
